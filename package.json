@@ -1,0 +1,15 @@
+{
+  "name": "elm_intro_talk",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Maxim-Filimonov/elm_intro_talk.git",
+  "author": "Maxim Filimonov <tpaktopsp@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "parcel": "^1.10.3"
+  },
+  "devDependencies": {
+    "node-elm-compiler": "^5.0.1"
+  }
+}
