@@ -46,6 +46,11 @@ update msg model =
             { model | hoursPerMonth = Maybe.withDefault defaultHours (String.toInt value) }
 
 
+renderTotal : String -> Int -> Html Msg
+renderTotal label number =
+    p [] [ text (String.fromInt number ++ " " ++ label) ]
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -68,8 +73,8 @@ view model =
             []
         , label [] [ text hours ]
         , h2 [] [ text "The program total:" ]
-        , p [] [ text (String.fromInt totalWeeks ++ " weeks ") ]
-        , p [] [ text (String.fromInt totalMonth ++ " months") ]
-        , p [] [ text (String.fromInt totalCost ++ " $") ]
+        , renderTotal "weeks" totalWeeks
+        , renderTotal "months" totalMonth
+        , renderTotal "$" totalCost
         , input [ type_ "text", onInput ManualChange ] []
         ]
