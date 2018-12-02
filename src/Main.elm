@@ -61,6 +61,33 @@ renderTotal label number =
     el [] <| text (String.fromInt number ++ " " ++ label)
 
 
+renderSlider : Int -> Element Msg
+renderSlider hours =
+    Input.slider
+        [ Element.height (Element.px 30)
+
+        -- Here is where we're creating/styling the "track"
+        , Element.behindContent
+            (Element.el
+                [ Element.width Element.fill
+                , Element.height (Element.px 2)
+                , Element.centerY
+                , Element.Background.color (rgb255 52 101 164)
+                , Element.Border.rounded 2
+                ]
+                Element.none
+            )
+        ]
+        { min = 10
+        , max = 60
+        , label = Input.labelAbove [] (text (String.fromInt hours ++ " hours commited per week"))
+        , onChange = HoursChanged
+        , value = toFloat hours
+        , step = Just 1
+        , thumb = Input.defaultThumb
+        }
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -83,29 +110,7 @@ view model =
         column [ width fill, spacingXY 0 20 ]
             [ el [ centerX ] <|
                 text "What is the total cost of the program ?"
-            , Input.slider
-                [ Element.height (Element.px 30)
-
-                -- Here is where we're creating/styling the "track"
-                , Element.behindContent
-                    (Element.el
-                        [ Element.width Element.fill
-                        , Element.height (Element.px 2)
-                        , Element.centerY
-                        , Element.Background.color (rgb255 52 101 164)
-                        , Element.Border.rounded 2
-                        ]
-                        Element.none
-                    )
-                ]
-                { min = 10
-                , max = 60
-                , label = Input.labelAbove [] (text (String.fromInt hours ++ " hours commited per week"))
-                , onChange = HoursChanged
-                , value = toFloat hours
-                , step = Just 1
-                , thumb = Input.defaultThumb
-                }
+            , renderSlider hours
             , renderTotal "weeks" totalWeeks
             , renderTotal "months" totalMonth
             , renderTotal "$" totalCost
