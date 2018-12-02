@@ -16,11 +16,11 @@ main =
 
 
 total =
-    600
+    480
 
 
 defaultHours =
-    20
+    0
 
 
 costPerMonth =
