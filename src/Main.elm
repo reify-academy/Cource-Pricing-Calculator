@@ -52,7 +52,7 @@ update msg model =
 
 renderTotal : String -> Int -> Element Msg
 renderTotal label number =
-    row []
+    wrappedRow []
         [ el [ Font.bold ] <| text (String.fromInt number)
         , el [] <| text (" " ++ label)
         ]
