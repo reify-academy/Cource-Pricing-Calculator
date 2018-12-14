@@ -52,10 +52,6 @@ update msg model =
 
 
 
--- ManualChange value ->
---     { model | hoursPerMonth = Maybe.withDefault defaultHours (String.toInt value) }
-
-
 renderTotal : String -> Int -> Element Msg
 renderTotal label number =
     el [] <| text (String.fromInt number ++ " " ++ label)
@@ -112,6 +108,6 @@ view model =
                 text "What is the total cost of the program ?"
             , renderSlider hours
             , renderTotal "weeks" totalWeeks
-            , renderTotal "months" totalMonth
+            , renderTotal "months approximately" totalMonth
             , el [] <| text ("$" ++ " " ++ (String.fromInt totalCost))
             ]
