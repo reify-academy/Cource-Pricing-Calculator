@@ -1,11 +1,10 @@
 module Main exposing (main)
 
--- import Html.Attributes as Attrs exposing (..)
-
 import Browser
 import Element exposing (..)
 import Element.Background exposing (..)
 import Element.Border exposing (rounded)
+import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html)
 import Html.Events exposing (..)
@@ -51,10 +50,12 @@ update msg model =
             { model | hoursPerMonth = round hours }
 
 
-
 renderTotal : String -> Int -> Element Msg
 renderTotal label number =
-    el [] <| text (String.fromInt number ++ " " ++ label)
+    row []
+        [ el [ Font.bold ] <| text (String.fromInt number)
+        , el [] <| text (" " ++ label)
+        ]
 
 
 renderSlider : Int -> Element Msg
@@ -84,6 +85,10 @@ renderSlider hours =
         }
 
 
+headingStyle =
+    [ Font.bold, Font.underline ]
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -105,9 +110,11 @@ view model =
     <|
         column [ width fill, spacingXY 0 20 ]
             [ el [ centerX ] <|
-                text "What is the total cost of the program ?"
+                text "Program Cost Calculator"
             , renderSlider hours
+            , el headingStyle <| text "How long will it take to learn how to build my project?"
             , renderTotal "weeks" totalWeeks
             , renderTotal "months approximately" totalMonth
-            , el [] <| text ("$" ++ " " ++ (String.fromInt totalCost))
+            , el headingStyle <| text "How much will it cost?"
+            , el [] <| text ("$" ++ " " ++ String.fromInt totalCost)
             ]
