@@ -8,13 +8,24 @@ import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html)
 import Html.Events exposing (..)
+import Json.Decode as D
 
 
 main =
-    Browser.sandbox { init = init, view = view, update = update }
+    Browser.element
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
 
 
-total =
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
+
+
+defaultTotal =
     480
 
 
@@ -22,32 +33,44 @@ defaultHours =
     0
 
 
-costPerMonth =
+defaultCostPerMonth =
     2000
 
 
 type alias Model =
-    { hoursPerMonth : Int }
+    { hoursPerMonth : Int
+    , config : Flags
+    }
+
+
+type alias Flags =
+    { costPerMonth : Maybe Int
+    , totalNumberOfHours : Maybe Int
+    }
 
 
 type Msg
     = HoursChanged Float
 
 
-
--- | ManualChange String
-
-
-init : Model
-init =
-    { hoursPerMonth = defaultHours }
+flagsDecoder : D.Decoder Flags
+flagsDecoder = D.map2 Flags (D.maybe (D.field "costPerMonth" D.int)) (D.maybe (D.field "totalNumberOfHour" D.int))
 
 
-update : Msg -> Model -> Model
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( { hoursPerMonth = defaultHours
+      , config = flags
+      }
+    , Cmd.none
+    )
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         HoursChanged hours ->
-            { model | hoursPerMonth = round hours }
+            ( { model | hoursPerMonth = round hours }, Cmd.none )
 
 
 renderTotal : String -> Int -> Element Msg
@@ -89,6 +112,20 @@ headingStyle =
     [ Font.bold, Font.underline ]
 
 
+costPerMonth : Model -> Int
+costPerMonth =
+    Maybe.withDefault defaultCostPerMonth
+        << .costPerMonth
+        << .config
+
+
+total : Model -> Int
+total =
+    Maybe.withDefault defaultTotal
+        << .totalNumberOfHours
+        << .config
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -96,13 +133,13 @@ view model =
             model.hoursPerMonth
 
         totalWeeks =
-            total // model.hoursPerMonth
+            total model // model.hoursPerMonth
 
         totalMonth =
             totalWeeks // 4
 
         totalCost =
-            costPerMonth * totalMonth
+            costPerMonth model * totalMonth
     in
     layout
         [ padding 10
