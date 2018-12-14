@@ -113,5 +113,5 @@ view model =
             , renderSlider hours
             , renderTotal "weeks" totalWeeks
             , renderTotal "months" totalMonth
-            , renderTotal "$" totalCost
+            , el [] <| text ("$" ++ " " ++ (String.fromInt totalCost))
             ]
