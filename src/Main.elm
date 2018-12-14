@@ -75,7 +75,7 @@ renderSlider hours =
                 Element.none
             )
         ]
-        { min = 10
+        { min = 0
         , max = 60
         , label = Input.labelAbove [] (text (String.fromInt hours ++ " hours worked per week"))
         , onChange = HoursChanged
