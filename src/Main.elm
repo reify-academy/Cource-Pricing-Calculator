@@ -15,11 +15,11 @@ main =
 
 
 total =
-    600
+    480
 
 
 defaultHours =
-    20
+    0
 
 
 costPerMonth =
@@ -77,7 +77,7 @@ renderSlider hours =
         ]
         { min = 10
         , max = 60
-        , label = Input.labelAbove [] (text (String.fromInt hours ++ " hours commited per week"))
+        , label = Input.labelAbove [] (text (String.fromInt hours ++ " hours worked per week"))
         , onChange = HoursChanged
         , value = toFloat hours
         , step = Just 1
