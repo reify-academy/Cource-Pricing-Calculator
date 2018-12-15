@@ -30,7 +30,7 @@ defaultTotal =
 
 
 defaultHours =
-    0
+    10
 
 
 defaultCostPerMonth =
@@ -54,7 +54,8 @@ type Msg
 
 
 flagsDecoder : D.Decoder Flags
-flagsDecoder = D.map2 Flags (D.maybe (D.field "costPerMonth" D.int)) (D.maybe (D.field "totalNumberOfHour" D.int))
+flagsDecoder =
+    D.map2 Flags (D.maybe (D.field "costPerMonth" D.int)) (D.maybe (D.field "totalNumberOfHour" D.int))
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -98,7 +99,7 @@ renderSlider hours =
                 Element.none
             )
         ]
-        { min = 0
+        { min = defaultHours
         , max = 60
         , label = Input.labelAbove [] (text (String.fromInt hours ++ " hours worked per week"))
         , onChange = HoursChanged
@@ -109,7 +110,7 @@ renderSlider hours =
 
 
 headingStyle =
-    [ Font.bold, Font.underline ]
+    [ Font.bold, Font.underline, width fill ]
 
 
 costPerMonth : Model -> Int
@@ -149,9 +150,9 @@ view model =
             [ el [ centerX ] <|
                 text "Program Cost Calculator"
             , renderSlider hours
-            , el headingStyle <| text "How long will it take to learn how to build my project?"
+            , paragraph headingStyle [ text "How long will it take to learn how to build my project?" ]
             , renderTotal "weeks" totalWeeks
             , renderTotal "months approximately" totalMonth
-            , el headingStyle <| text "How much will it cost?"
+            , paragraph headingStyle [ text "How much will it cost?" ]
             , el [] <| text ("$" ++ " " ++ String.fromInt totalCost)
             ]
