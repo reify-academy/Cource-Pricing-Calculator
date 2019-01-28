@@ -105,7 +105,13 @@ renderSlider hours =
         , onChange = HoursChanged
         , value = toFloat hours
         , step = Just 1
-        , thumb = Input.defaultThumb
+        , thumb = Input.thumb 
+            [ Element.width (Element.px 8)
+            , Element.height (Element.px 16)
+            , Element.Border.width 1
+            , Element.Border.color (Element.rgb 0.5 0.5 0.5)
+            , Element.Background.color (Element.rgb 1 1 1)
+            ]
         }
 
 
