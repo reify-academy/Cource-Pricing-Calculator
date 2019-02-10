@@ -74,14 +74,6 @@ update msg model =
             ( { model | sessionsPerMonth = round numberOfSessions }, Cmd.none )
 
 
-renderTotal : String -> Int -> Element Msg
-renderTotal label number =
-    wrappedRow []
-        [ el [ Font.bold ] <| text (String.fromInt number)
-        , el [] <| text (" " ++ label)
-        ]
-
-
 renderSessionsPerMonth numberOfSessions =
     if numberOfSessions == 0 then
         "No sessions with a mentor."
