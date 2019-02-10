@@ -166,7 +166,7 @@ view model =
                 text "Reify Cost Calculator"
             , renderSlider numberOfSessions
             , paragraph []
-                [ text "The total of the program: "
-                , el [] <| text ("$" ++ " " ++ String.fromInt totalCost ++ " per month")
+                [ text "The total cost of the program: "
+                , el [ Font.bold ] <| text ("$" ++ " " ++ String.fromInt totalCost ++ " per month")
                 ]
             ]
