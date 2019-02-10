@@ -122,13 +122,9 @@ renderSlider numberOfSessions =
                 , Element.height (Element.px 20)
                 , Element.Border.width 1
                 , Element.Border.color (Element.rgb 0.5 0.5 0.5)
-                , Element.Background.color (Element.rgb 1 1 1)
+                , Element.Background.color (Element.rgb255 76 181 171)
                 ]
         }
-
-
-headingStyle =
-    [ Font.bold, Font.underline, width fill ]
 
 
 programCost : Model -> Int
@@ -161,7 +157,7 @@ view model =
         [ padding 10
         ]
     <|
-        column [ spacingXY 0 20, paddingXY 50 0 ]
+        column [ width fill, spacingXY 0 20, paddingXY 50 0 ]
             [ el [ centerX ] <|
                 text "Reify Cost Calculator"
             , renderSlider numberOfSessions
