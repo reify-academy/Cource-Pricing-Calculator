@@ -34,7 +34,7 @@ defaultSessionsPerMonths =
 
 
 defaultCostPerSession =
-    75
+    115
 
 
 type alias Model =
@@ -161,7 +161,7 @@ view model =
         [ padding 10
         ]
     <|
-        column [ width fill, spacingXY 0 20, padding 25 ]
+        column [ spacingXY 0 20, paddingXY 50 0 ]
             [ el [ centerX ] <|
                 text "Reify Cost Calculator"
             , renderSlider numberOfSessions
