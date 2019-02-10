@@ -29,8 +29,8 @@ defaultTotal =
     480
 
 
-defaultHours =
-    10
+defaultSessionsPerMonths =
+    0
 
 
 defaultCostPerMonth =
@@ -38,7 +38,7 @@ defaultCostPerMonth =
 
 
 type alias Model =
-    { hoursPerMonth : Int
+    { sessionsPerMonth : Int
     , config : Flags
     }
 
@@ -50,7 +50,7 @@ type alias Flags =
 
 
 type Msg
-    = HoursChanged Float
+    = NumberOfSessionsChanged Float
 
 
 flagsDecoder : D.Decoder Flags
@@ -60,7 +60,7 @@ flagsDecoder =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { hoursPerMonth = defaultHours
+    ( { sessionsPerMonth = defaultSessionsPerMonths
       , config = flags
       }
     , Cmd.none
@@ -70,8 +70,8 @@ init flags =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        HoursChanged hours ->
-            ( { model | hoursPerMonth = round hours }, Cmd.none )
+        NumberOfSessionsChanged numberOfSessions ->
+            ( { model | sessionsPerMonth = round numberOfSessions }, Cmd.none )
 
 
 renderTotal : String -> Int -> Element Msg
@@ -82,8 +82,19 @@ renderTotal label number =
         ]
 
 
+renderSessionsPerMonth numberOfSessions =
+    if numberOfSessions == 0 then
+        "No sessions with a mentor."
+
+    else if numberOfSessions == 1 then
+        String.fromInt numberOfSessions ++ " session with a mentor"
+
+    else
+        String.fromInt numberOfSessions ++ " sessions with a mentor"
+
+
 renderSlider : Int -> Element Msg
-renderSlider hours =
+renderSlider numberOfSessions =
     Input.slider
         [ Element.height (Element.px 30)
 
@@ -99,19 +110,20 @@ renderSlider hours =
                 Element.none
             )
         ]
-        { min = defaultHours
+        { min = defaultSessionsPerMonths
         , max = 60
-        , label = Input.labelAbove [] (text (String.fromInt hours ++ " hours worked per week"))
-        , onChange = HoursChanged
-        , value = toFloat hours
+        , label = Input.labelAbove [] (text (renderSessionsPerMonth numberOfSessions))
+        , onChange = NumberOfSessionsChanged
+        , value = toFloat numberOfSessions
         , step = Just 1
-        , thumb = Input.thumb 
-            [ Element.width (Element.px 12)
-            , Element.height (Element.px 20)
-            , Element.Border.width 1
-            , Element.Border.color (Element.rgb 0.5 0.5 0.5)
-            , Element.Background.color (Element.rgb 1 1 1)
-            ]
+        , thumb =
+            Input.thumb
+                [ Element.width (Element.px 12)
+                , Element.height (Element.px 20)
+                , Element.Border.width 1
+                , Element.Border.color (Element.rgb 0.5 0.5 0.5)
+                , Element.Background.color (Element.rgb 1 1 1)
+                ]
         }
 
 
@@ -136,11 +148,11 @@ total =
 view : Model -> Html Msg
 view model =
     let
-        hours =
-            model.hoursPerMonth
+        numberOfSessions =
+            model.sessionsPerMonth
 
         totalWeeks =
-            total model // model.hoursPerMonth
+            total model // model.sessionsPerMonth
 
         totalMonth =
             totalWeeks // 4
@@ -155,7 +167,7 @@ view model =
         column [ width fill, spacingXY 0 20 ]
             [ el [ centerX ] <|
                 text "Program Cost Calculator"
-            , renderSlider hours
+            , renderSlider numberOfSessions
             , paragraph headingStyle [ text "How long will it take to learn how to build my project?" ]
             , renderTotal "weeks" totalWeeks
             , renderTotal "months approximately" totalMonth
