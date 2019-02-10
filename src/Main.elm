@@ -25,16 +25,16 @@ subscriptions model =
     Sub.none
 
 
-defaultTotal =
-    480
+defaultProgramCost =
+    150
 
 
 defaultSessionsPerMonths =
     0
 
 
-defaultCostPerMonth =
-    2000
+defaultCostPerSession =
+    75
 
 
 type alias Model =
@@ -44,8 +44,8 @@ type alias Model =
 
 
 type alias Flags =
-    { costPerMonth : Maybe Int
-    , totalNumberOfHours : Maybe Int
+    { costPerSession : Maybe Int
+    , programCost : Maybe Int
     }
 
 
@@ -55,7 +55,7 @@ type Msg
 
 flagsDecoder : D.Decoder Flags
 flagsDecoder =
-    D.map2 Flags (D.maybe (D.field "costPerMonth" D.int)) (D.maybe (D.field "totalNumberOfHour" D.int))
+    D.map2 Flags (D.maybe (D.field "costPerSession" D.int)) (D.maybe (D.field "programCost" D.int))
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -87,10 +87,10 @@ renderSessionsPerMonth numberOfSessions =
         "No sessions with a mentor."
 
     else if numberOfSessions == 1 then
-        String.fromInt numberOfSessions ++ " session with a mentor"
+        String.fromInt numberOfSessions ++ " session with a mentor per month."
 
     else
-        String.fromInt numberOfSessions ++ " sessions with a mentor"
+        String.fromInt numberOfSessions ++ " sessions with a mentor per month."
 
 
 renderSlider : Int -> Element Msg
@@ -131,17 +131,17 @@ headingStyle =
     [ Font.bold, Font.underline, width fill ]
 
 
-costPerMonth : Model -> Int
-costPerMonth =
-    Maybe.withDefault defaultCostPerMonth
-        << .costPerMonth
+programCost : Model -> Int
+programCost =
+    Maybe.withDefault defaultProgramCost
+        << .programCost
         << .config
 
 
-total : Model -> Int
-total =
-    Maybe.withDefault defaultTotal
-        << .totalNumberOfHours
+costPerSession : Model -> Int
+costPerSession =
+    Maybe.withDefault defaultCostPerSession
+        << .costPerSession
         << .config
 
 
@@ -151,26 +151,22 @@ view model =
         numberOfSessions =
             model.sessionsPerMonth
 
-        totalWeeks =
-            total model // model.sessionsPerMonth
-
-        totalMonth =
-            totalWeeks // 4
+        sessionsCost =
+            numberOfSessions * costPerSession model
 
         totalCost =
-            costPerMonth model * totalMonth
+            programCost model + sessionsCost
     in
     layout
         [ padding 10
         ]
     <|
-        column [ width fill, spacingXY 0 20 ]
+        column [ width fill, spacingXY 0 20, padding 25 ]
             [ el [ centerX ] <|
-                text "Program Cost Calculator"
+                text "Reify Cost Calculator"
             , renderSlider numberOfSessions
-            , paragraph headingStyle [ text "How long will it take to learn how to build my project?" ]
-            , renderTotal "weeks" totalWeeks
-            , renderTotal "months approximately" totalMonth
-            , paragraph headingStyle [ text "How much will it cost?" ]
-            , el [] <| text ("$" ++ " " ++ String.fromInt totalCost)
+            , paragraph []
+                [ text "The total of the program: "
+                , el [] <| text ("$" ++ " " ++ String.fromInt totalCost ++ " per month")
+                ]
             ]
