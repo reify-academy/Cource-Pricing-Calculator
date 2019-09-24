@@ -133,8 +133,8 @@ costPerSession =
         << .config
 
 
-view : Model -> Html Msg
-view model =
+viewTotalCost : Model -> Element Msg
+viewTotalCost model =
     let
         numberOfSessions =
             model.sessionsPerMonth
@@ -145,6 +145,27 @@ view model =
         totalCost =
             programCost model + sessionsCost
     in
+    paragraph []
+        [ text "The total cost of the program: "
+        , el [ Font.bold ] <| text ("$" ++ " " ++ String.fromInt totalCost ++ " per month")
+        ]
+
+
+viewSessionsPerWeek : Model -> Element Msg
+viewSessionsPerWeek model =
+    let
+        sessionsPerWeek =
+            toFloat model.sessionsPerMonth / 4
+    in
+    el [] <| text <| "Average number of sessions per week: " ++ String.fromFloat sessionsPerWeek
+
+
+view : Model -> Html Msg
+view model =
+    let
+        numberOfSessions =
+            model.sessionsPerMonth
+    in
     layout
         [ padding 10
         ]
@@ -153,8 +174,6 @@ view model =
             [ el [ centerX ] <|
                 text "Reify Cost Calculator"
             , renderSlider numberOfSessions
-            , paragraph []
-                [ text "The total cost of the program: "
-                , el [ Font.bold ] <| text ("$" ++ " " ++ String.fromInt totalCost ++ " per month")
-                ]
+            , viewSessionsPerWeek model
+            , viewTotalCost model
             ]
