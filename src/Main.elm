@@ -29,12 +29,12 @@ defaultProgramCost =
     150
 
 
-defaultSessionsPerMonths =
-    0
+minimumSessionsPerMonths =
+    4
 
 
 defaultCostPerSession =
-    115
+    125
 
 
 type alias Model =
@@ -60,7 +60,7 @@ flagsDecoder =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { sessionsPerMonth = defaultSessionsPerMonths
+    ( { sessionsPerMonth = minimumSessionsPerMonths
       , config = flags
       }
     , Cmd.none
@@ -102,8 +102,8 @@ renderSlider numberOfSessions =
                 Element.none
             )
         ]
-        { min = defaultSessionsPerMonths
-        , max = 60
+        { min = minimumSessionsPerMonths
+        , max = 20
         , label = Input.labelAbove [] (text (renderSessionsPerMonth numberOfSessions))
         , onChange = NumberOfSessionsChanged
         , value = toFloat numberOfSessions
