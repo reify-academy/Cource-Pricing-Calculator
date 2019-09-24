@@ -87,6 +87,11 @@ renderSessionsPerMonth numberOfSessions =
 
 renderSlider : Int -> Element Msg
 renderSlider numberOfSessions =
+    let
+        numberOfSessionsLabel : Element Msg
+        numberOfSessionsLabel =
+            el [] <| text (renderSessionsPerMonth numberOfSessions)
+    in
     Input.slider
         [ Element.height (Element.px 30)
 
@@ -104,7 +109,7 @@ renderSlider numberOfSessions =
         ]
         { min = minimumSessionsPerMonths
         , max = 20
-        , label = Input.labelAbove [] (text (renderSessionsPerMonth numberOfSessions))
+        , label = Input.labelAbove [] (paragraph [] [ numberOfSessionsLabel ])
         , onChange = NumberOfSessionsChanged
         , value = toFloat numberOfSessions
         , step = Just 1
@@ -114,7 +119,8 @@ renderSlider numberOfSessions =
                 , Element.height (Element.px 20)
                 , Element.Border.width 1
                 , Element.Border.color (Element.rgb 0.5 0.5 0.5)
-                , Element.Background.color (Element.rgb255 76 181 171)
+                , Element.Border.rounded 10
+                , Element.Background.color (Element.rgb255 0 0 0)
                 ]
         }
 
@@ -157,7 +163,7 @@ viewSessionsPerWeek model =
         sessionsPerWeek =
             toFloat model.sessionsPerMonth / 4
     in
-    el [] <| text <| "Average number of sessions per week: " ++ String.fromFloat sessionsPerWeek
+    paragraph [] [ el [] <| text <| "Average number of sessions per week: " ++ String.fromFloat sessionsPerWeek ]
 
 
 view : Model -> Html Msg
