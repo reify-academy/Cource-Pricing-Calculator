@@ -173,7 +173,8 @@ view model =
             model.sessionsPerMonth
     in
     layout
-        [ padding 10
+        [ padding 10,
+        Font.family [Font.typeface "Montserrat", Font.sansSerif]
         ]
     <|
         column [ width fill, spacingXY 0 20, paddingXY 50 0 ]
