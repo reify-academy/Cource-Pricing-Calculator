@@ -125,6 +125,57 @@ renderSlider numberOfSessions =
         }
 
 
+averageCostOfDeveloperPerHour =
+    85
+
+
+type alias Estimate =
+    { name : String, agencyHours : Int, developerHours : Int }
+
+
+hoursEstimates : List Estimate
+hoursEstimates =
+    [ { agencyHours = 600
+      , developerHours = 500
+      , name = "AirBnb"
+      }
+    , { developerHours = 175
+      , agencyHours = 220
+      , name = "Real Reddit"
+      }
+    , { agencyHours = 125
+      , developerHours = 100
+      , name = "Minimal Reddit"
+      }
+    , { agencyHours = 440
+      , developerHours = 350
+      , name = "Etsy"
+      }
+    ]
+
+
+airbnbDevHours =
+    500
+
+
+totalDeveloperCost =
+    airbnbDevHours * averageCostOfDeveloperPerHour
+
+
+agencyCost =
+    averageCostOfDeveloperPerHour * airbnbagencyHours
+
+
+airbnbagencyHours =
+    600
+
+
+
+-- calcDeveloperEquivalent : Float -> Int
+-- calcDeveloperEquivalent numberOfSessions =
+--     numberOfSessions * 5
+
+
 programCost : Model -> Int
 programCost =
     Maybe.withDefault defaultProgramCost
@@ -173,8 +224,8 @@ view model =
             model.sessionsPerMonth
     in
     layout
-        [ padding 10,
-        Font.family [Font.typeface "Montserrat", Font.sansSerif]
+        [ padding 10
+        , Font.family [ Font.typeface "Montserrat", Font.sansSerif ]
         ]
     <|
         column [ width fill, spacingXY 0 20, paddingXY 50 0 ]
