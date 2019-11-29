@@ -1,5 +1,6 @@
 module Main exposing (main)
 
+import Array
 import Browser
 import Element exposing (..)
 import Element.Background exposing (..)
@@ -40,6 +41,7 @@ defaultCostPerSession =
 type alias Model =
     { sessionsPerMonth : Int
     , config : Flags
+    , selectedEstimate : Float
     }
 
 
@@ -51,6 +53,7 @@ type alias Flags =
 
 type Msg
     = NumberOfSessionsChanged Float
+    | HourEstimatesChanged Float
 
 
 flagsDecoder : D.Decoder Flags
@@ -62,6 +65,7 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { sessionsPerMonth = minimumSessionsPerMonths
       , config = flags
+      , selectedEstimate = 0
       }
     , Cmd.none
     )
@@ -72,6 +76,9 @@ update msg model =
     case msg of
         NumberOfSessionsChanged numberOfSessions ->
             ( { model | sessionsPerMonth = round numberOfSessions }, Cmd.none )
+
+        HourEstimatesChanged selectedEstimate ->
+            ( { model | selectedEstimate = selectedEstimate }, Cmd.none )
 
 
 renderSessionsPerMonth numberOfSessions =
@@ -135,21 +142,21 @@ type alias Estimate =
 
 hoursEstimates : List Estimate
 hoursEstimates =
-    [ { agencyHours = 600
-      , developerHours = 500
-      , name = "AirBnb"
+    [ { agencyHours = 125
+      , developerHours = 100
+      , name = "Minimal Reddit"
       }
     , { developerHours = 175
       , agencyHours = 220
       , name = "Real Reddit"
       }
-    , { agencyHours = 125
-      , developerHours = 100
-      , name = "Minimal Reddit"
-      }
     , { agencyHours = 440
       , developerHours = 350
       , name = "Etsy"
+      }
+    , { agencyHours = 600
+      , developerHours = 500
+      , name = "AirBnB"
       }
     ]
 
@@ -188,6 +195,62 @@ costPerSession =
     Maybe.withDefault defaultCostPerSession
         << .costPerSession
         << .config
+
+
+viewHourEstimates : Float -> List Estimate -> Element Msg
+viewHourEstimates selectedEstimateIndex estimates =
+    let
+        estimatesArray =
+            Array.fromList estimates
+
+        selectedEstimate : Estimate
+        selectedEstimate =
+            let
+                candidate =
+                    Array.get (round selectedEstimateIndex) estimatesArray
+
+                default =
+                    { agencyHours = 125
+                    , developerHours = 100
+                    , name = "Minimal Reddit"
+                    }
+            in
+            Maybe.withDefault default candidate
+
+        selectedEstimateText =
+            selectedEstimate.name
+    in
+    Input.slider
+        [ Element.height (Element.px 30)
+
+        -- Here is where we're creating/styling the "track"
+        , Element.behindContent
+            (Element.el
+                [ Element.width Element.fill
+                , Element.height (Element.px 2)
+                , Element.centerY
+                , Element.Background.color (rgb255 52 101 164)
+                , Element.Border.rounded 2
+                ]
+                Element.none
+            )
+        ]
+        { min = 0
+        , max = toFloat <| List.length estimates - 1
+        , label = Input.labelAbove [] (paragraph [] [ text selectedEstimateText ])
+        , onChange = HourEstimatesChanged
+        , value = selectedEstimateIndex
+        , step = Just 1
+        , thumb =
+            Input.thumb
+                [ Element.width (Element.px 12)
+                , Element.height (Element.px 20)
+                , Element.Border.width 1
+                , Element.Border.color (Element.rgb 0.5 0.5 0.5)
+                , Element.Border.rounded 10
+                , Element.Background.color (Element.rgb255 0 0 0)
+                ]
+        }
 
 
 viewTotalCost : Model -> Element Msg
@@ -234,4 +297,5 @@ view model =
             , renderSlider numberOfSessions
             , viewSessionsPerWeek model
             , viewTotalCost model
+            , viewHourEstimates model.selectedEstimate hoursEstimates
             ]
