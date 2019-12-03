@@ -169,6 +169,10 @@ totalDeveloperCost =
     airbnbDevHours * averageCostOfDeveloperPerHour
 
 
+calculateAgencyCost : Int -> Int
+calculateAgencyCost =
+    (*) averageCostOfDeveloperPerHour
+
 agencyCost =
     averageCostOfDeveloperPerHour * airbnbagencyHours
 
