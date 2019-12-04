@@ -169,12 +169,19 @@ totalDeveloperCost =
     airbnbDevHours * averageCostOfDeveloperPerHour
 
 
-calculateAgencyCost : Int -> Int
-calculateAgencyCost =
-    (*) averageCostOfDeveloperPerHour
+calculateDeveloperDuration : Int -> Int
+calculateDeveloperDuration hours =
+    hours // 30
 
-agencyCost =
-    averageCostOfDeveloperPerHour * airbnbagencyHours
+
+calculateAgencyDuration : Int -> Int
+calculateAgencyDuration hours =
+    hours // 60
+
+
+calculateCost : Int -> Int
+calculateCost =
+    (*) averageCostOfDeveloperPerHour
 
 
 airbnbagencyHours =
@@ -221,8 +228,20 @@ viewHourEstimates selectedEstimateIndex estimates =
             in
             Maybe.withDefault default candidate
 
+        agencyDuration =
+            String.fromInt <| calculateAgencyDuration selectedEstimate.agencyHours
+
+        developerDuration =
+            String.fromInt <| calculateDeveloperDuration selectedEstimate.developerHours
+
+        agencyCost =
+            calculateCost selectedEstimate.agencyHours
+
+        developerCost =
+            calculateCost selectedEstimate.developerHours
+
         selectedEstimateText =
-            selectedEstimate.name
+            selectedEstimate.name ++ " Developer Cost: " ++ String.fromInt developerCost ++ " Agency Cost: " ++ String.fromInt agencyCost
     in
     Input.slider
         [ Element.height (Element.px 30)
@@ -241,7 +260,14 @@ viewHourEstimates selectedEstimateIndex estimates =
         ]
         { min = 0
         , max = toFloat <| List.length estimates - 1
-        , label = Input.labelAbove [] (paragraph [] [ text selectedEstimateText ])
+        , label =
+            Input.labelAbove []
+                (row []
+                    [ paragraph [] [ text selectedEstimateText ]
+                    , paragraph [] [ text agencyDuration ]
+                    , paragraph [] [ text developerDuration ]
+                    ]
+                )
         , onChange = HourEstimatesChanged
         , value = selectedEstimateIndex
         , step = Just 1
@@ -270,7 +296,7 @@ viewTotalCost model =
             programCost model + sessionsCost
     in
     paragraph []
-        [ text "The total cost of the program: "
+        [ text "The monthly cost of the program: "
         , el [ Font.bold ] <| text ("$" ++ " " ++ String.fromInt totalCost ++ " per month")
         ]
 
