@@ -240,8 +240,51 @@ viewHourEstimates selectedEstimateIndex estimates =
         developerCost =
             calculateCost selectedEstimate.developerHours
 
-        selectedEstimateText =
-            selectedEstimate.name ++ " Developer Cost: " ++ String.fromInt developerCost ++ " Agency Cost: " ++ String.fromInt agencyCost
+        selectedEstimates =
+            [ { label = "Developer Cost"
+              , value = String.fromInt developerCost
+              , duration = developerDuration
+              }
+            , { label = "Agency Cost"
+              , value = String.fromInt agencyCost
+              , duration = agencyDuration
+              }
+            ]
+
+        edges =
+            { top = 0
+            , right = 0
+            , bottom = 0
+            , left = 0
+            }
+
+        estimatesView =
+            Element.table []
+                { data = selectedEstimates
+                , columns =
+                    [ { header = el [ Font.bold ] <| text "Description"
+                      , width = fill
+                      , view =
+                            \row ->
+                                el [ paddingEach { edges | top = 10 } ] <| Element.text row.label
+                      }
+                    , { header = el [ Font.bold, Font.center ] <| text "Cost"
+                      , width = fill
+                      , view =
+                            \row ->
+                                el [ paddingEach { edges | top = 10 }, Font.center ] <|
+                                    Element.text <|
+                                        "$"
+                                            ++ row.value
+                      }
+                    , { header = el [ Font.bold ] <| text "Duration"
+                      , width = fill
+                      , view =
+                            \row ->
+                                el [ paddingEach { edges | top = 10 } ] <| Element.text (row.duration ++ " month(s)")
+                      }
+                    ]
+                }
     in
     Input.slider
         [ Element.height (Element.px 30)
@@ -261,21 +304,21 @@ viewHourEstimates selectedEstimateIndex estimates =
         { min = 0
         , max = toFloat <| List.length estimates - 1
         , label =
-            Input.labelAbove []
-                (row []
-                    [ paragraph [] [ text selectedEstimateText ]
-                    , paragraph [] [ text agencyDuration ]
-                    , paragraph [] [ text developerDuration ]
+            Input.labelBelow []
+                (column []
+                    [ paragraph [ Font.center, Font.size 24, paddingEach { edges | bottom = 10 } ] [ el [] <| text ("Project Name: " ++ selectedEstimate.name) ]
+                    , estimatesView
                     ]
                 )
         , onChange = HourEstimatesChanged
         , value = selectedEstimateIndex
         , step = Just 1
+        -- this is the slider
         , thumb =
             Input.thumb
                 [ Element.width (Element.px 12)
                 , Element.height (Element.px 20)
-                , Element.Border.width 1
+                , Element.Border.width 10
                 , Element.Border.color (Element.rgb 0.5 0.5 0.5)
                 , Element.Border.rounded 10
                 , Element.Background.color (Element.rgb255 0 0 0)
