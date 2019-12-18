@@ -1,3 +1,7 @@
+-- To add our cost to comparison table with either ability to choose between 3 different intensity levels or just middle level only
+-- Add explanation of how many hours our estimates are based on. This should go in a webflow appendix section.
+
+
 module Main exposing (main)
 
 import Array
