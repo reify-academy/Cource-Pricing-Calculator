@@ -1,3 +1,5 @@
+-- To add our cost to comparison table with either ability to choose between 3 different intensity levels or just middle level only
+-- Add explanation of how many hours our estimates are based on.
 module ProjectSlider exposing (Msg(..), viewHourEstimates, hoursEstimates)
 
 import Array
