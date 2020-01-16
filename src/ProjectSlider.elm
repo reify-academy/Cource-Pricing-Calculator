@@ -8,33 +8,31 @@ import Element.Font as Font
 import Element.Input as Input
 
 
-type alias Estimate =
-    { name : String, agencyHours : Int, developerHours : Int }
+type alias Estimate a =
+    { a | name : String, agencyHours : Int, developerHours : Int, reifyDescription : String }
+
+
+type alias ReifyStats a =
+    { a | mvpDuration : Int, totalReifyDuration : Int }
 
 
 type Msg
     = HourEstimatesChanged Float
 
 
-viewHourEstimates : Float -> List Estimate -> Element Msg
+viewHourEstimates : Float -> List (Estimate {}) -> Element Msg
 viewHourEstimates selectedEstimateIndex estimates =
     let
         estimatesArray =
             Array.fromList estimates
 
-        selectedEstimate : Estimate
+        selectedEstimate : Estimate {}
         selectedEstimate =
             let
                 candidate =
                     Array.get (round selectedEstimateIndex) estimatesArray
-
-                default =
-                    { agencyHours = 125
-                    , developerHours = 100
-                    , name = "Minimal Reddit"
-                    }
             in
-            Maybe.withDefault default candidate
+            Maybe.withDefault defaultEstimate candidate
 
         agencyDuration =
             String.fromInt <| calculateAgencyDuration selectedEstimate.agencyHours
@@ -139,23 +137,64 @@ averageCostOfDeveloperPerHour =
     85
 
 
-hoursEstimates : List Estimate
+defaultEstimate =
+    { agencyHours = 125
+    , developerHours = 100
+    , name = "Minimal Reddit"
+    , reifyDescription = """With Reify Academy you will learn how to build Minimal Reddit as your MVP. 
+      By the end of the 3-6 months course(depending on your pace) you will have working Minimal Reddit application with the total cost $4200 to $6800(depending on the pace)"""
+
+    -- , totalReifyDuration = round (100 * 1.3)
+    -- , mvpDuration = 700
+    }
+    
+    
+hoursEstimatesWithReifyNumbers : List (Estimate {}) -> List (ReifyStats (Estimate {}))
+hoursEstimatesWithReifyNumbers estimates =
+    let
+        addReifyStats : Estimate a -> ReifyStats (Estimate a)
+        addReifyStats est =
+            { est | mvpDuration = 100 }
+
+        -- { est | mvpDuration = 100, totalReifyDuration = 100 }
+    in
+    List.map addReifyStats estimates
+
+
+
+-- hoursEstimatesWithReifyNumbers: List Estimate -> List EstimateWithExtra
+
+
+hoursEstimates : List (Estimate {})
 hoursEstimates =
-    [ { agencyHours = 125
-      , developerHours = 100
-      , name = "Minimal Reddit"
-      }
+    [ defaultEstimate
     , { developerHours = 175
       , agencyHours = 220
       , name = "Real Reddit"
+      , reifyDescription = """With Reify Academy you will learn how to build Minimal Reddit as your MVP. 
+      By the end of the 3-6 months course(depending on your pace) you will have working Minimal Reddit application with the total cost $4200 to $6800(depending on the pace)"""
+
+      --   , totalReifyDuration = round (175 * 1.3)
+      --   , mvpDuration = 700
       }
     , { agencyHours = 440
       , developerHours = 350
+      , reifyDescription = """With Reify Academy you will learn how to build Minimal Reddit as your MVP. 
+      By the end of the 3-6 months course(depending on your pace) you will have working Minimal Reddit application with the total cost $4200 to $6800(depending on the pace)"""
       , name = "Etsy"
+
+      --   , totalReifyDuration = round (350 * 1.3)
+      --   , mvpDuration = 700
       }
     , { agencyHours = 600
       , developerHours = 500
       , name = "AirBnB"
+
+      --   , mvpDuration = 700
+      , reifyDescription = """With Reify Academy you will learn how to build Minimal Reddit as your MVP. 
+      By the end of the 3-6 months course(depending on your pace) you will have working Minimal Reddit application with the total cost $4200 to $6800(depending on the pace)"""
+
+      --   , totalReifyDuration = round (500 * 1.3)
       }
     ]
 
